@@ -16,67 +16,53 @@ Este projeto aplica boas práticas de engenharia de dados para estruturar e anal
 
 ---
 
-## 🔍 METODOLOGIA
+## ⚙️ Metodologia
 
-### 🟫 Camada Bronze
-- Armazenamento do dado bruto após leitura do CSV.
-- Normalização dos nomes de colunas para evitar erros de schema.
-- Registro no catálogo `bronze.state_of_data_2023`.
-
-### ◼️ Camada Silver
-- Seleção e renomeação das colunas relevantes.
-- Padronização dos tipos de dados.
-- Remoção de registros nulos.
-- Inclusão da coluna `dt_silver` (data de ingestão).
-- Registro no catálogo `silver.state_of_data`.
-
-### 🟨 Camada Gold
-- Mapeamento da coluna `tempo_experiencia` para valores categóricos padronizados.
-- Extração da faixa numérica da `faixa_salarial`.
-- Filtragem dos registros válidos para análise.
-- Registro no catálogo `gold.state_of_data`.
+1. **Bronze Layer**: Leitura do CSV original no DBFS.
+2. **Silver Layer**: Padronização de nomes de colunas, tipagem e remoção de valores nulos.
+3. **Gold Layer**: Criação de tabelas analíticas com agrupamentos e transformações específicas para insights.
 
 ---
 
-## 📈 RESULTADOS
+## 📈 Resultados - Camada Gold
 
-- Dados prontos para análise com colunas limpas e significativas.
-- Tabela Gold com tipagem correta e sem valores inconsistentes.
-- Base preparada para geração de dashboards e análises estatísticas.
+### 1. `gold.faixa_salarial_por_experiencia`
+- **Analise**: Profissionais com maior tempo de experiência tendem a se concentrar em faixas salariais mais altas.
 
-### Exemplos de insights gerados:
-- Distribuição de gênero por faixa etária.
-- Faixa salarial média por senioridade.
-- Impactos da diversidade nas oportunidades profissionais.
-- Análise regional dos profissionais de dados.
+### 2. `gold.salario_genero_cor_raca`
+- **Analise**: Pessoas negras e indígenas estão sub-representadas nas faixas salariais mais elevadas, especialmente entre mulheres.
+
+### 3. `gold.nivel_ensino_senioridade`
+- **Analise**: A maioria dos profissionais de nível sênior possui ao menos ensino superior completo. A senioridade se correlaciona positivamente com a escolaridade.
+
+### 4. `gold.mudanca_estado_salario`
+- **Analise**: Profissionais que mudaram de estado tendem a estar em faixas salariais mais altas, indicando possível mobilidade para melhores oportunidades.
+
+### 5. `gold.discriminacao_carreira`
+- **Analise**: Há relatos significativos de discriminação por cor/raça, gênero e deficiência, impactando oportunidades e salários, especialmente entre pessoas pretas, mulheres e PcDs.
+
+### 6. `gold.media_salarial_senioridade_experiencia`
+- **Analise**: A média salarial aumenta progressivamente com o tempo de experiência e senioridade. Profissionais sêniors com mais de 10 anos de experiência recebem as maiores médias salariais.
+
 
 ---
 
 ## 📌 OBSERVAÇÕES
 
-- As transformações foram feitas com foco em escalabilidade, legibilidade e reprodutibilidade.
-- Utiliza funções UDFs e expressões regulares para tratamento textual.
+- Algumas categorias foram padronizadas para facilitar a análise (e.g., faixas salariais e experiência).
+- Remoção de registros com informações incompletas em colunas-chave.
+- As análises consideram apenas registros válidos e consistentes.
 - O projeto está pronto para ser utilizado como base para análises mais avançadas ou integração com ferramentas de BI.
+- Algumas categorias foram padronizadas para facilitar a análise (e.g., faixas salariais e experiência).
+
 
 ---
 
-## 📁 ESTRUTURA DO PROJETO
-
-```
-.
-├── notebooks/
-│   └── mvp_puc_rio_engenharia_documentado.ipynb
-├── data/
-│   └── State_of_data_BR_2023.csv
-├── README.md
-└── requirements.txt
-```
-
 ## ▶️ COMO EXECUTAR
 
-1. Faça upload do notebook para seu workspace no Databricks.
-2. Coloque o arquivo CSV em `dbfs:/FileStore/State_of_data_BR_2023.csv`.
-3. Execute o notebook célula a célula.
+1. Carregar o dataset que encontra-se no repositorio dentro Databricks via (DBFS) ou pegar o arquivo raw no proprio git e fazer a ingestão via python.
+2. Executar os notebooks em ordem: Bronze → Silver → Gold.
+3. Consultar as tabelas da camada Gold via SQL ou exportar os resultados.
 
 ## 🛠️ TECNOLOGIAS
 
@@ -84,7 +70,3 @@ Este projeto aplica boas práticas de engenharia de dados para estruturar e anal
 - Databricks + Delta Lake
 - DBFS
 - SQL + Spark SQL
-
-## 📄 LICENÇA
-
-Distribuído sob a licença MIT. Veja `LICENSE` para mais detalhes.
